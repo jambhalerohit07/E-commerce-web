@@ -1,0 +1,95 @@
+.testi {
+  padding: 3.5rem 0 3rem;
+  background: var(--c-bg);
+}
+
+.testi__inner { text-align: center; }
+
+/* Quote icon bubble — matches design's 66 icon */
+.testi__quote-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 52px; height: 52px;
+  border-radius: 50%;
+  background: var(--orange);
+  color: #fff;
+  margin: 0 auto 1.5rem;
+  box-shadow: 0 4px 16px rgba(244,123,32,.35);
+}
+
+/* Card */
+.testi__card {
+  max-width: 740px;
+  margin: 0 auto;
+  animation: tFadeUp .42s ease both;
+}
+@keyframes tFadeUp { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
+
+.testi__text {
+  font-size: clamp(.88rem, 1.8vw, 1rem);
+  color: var(--c-text);
+  line-height: 1.85;
+  margin-bottom: 1.35rem;
+  font-style: italic;
+}
+
+.testi__stars {
+  display: flex;
+  justify-content: center;
+  gap: .2rem;
+  color: #f5a623;
+  margin-bottom: 1.25rem;
+}
+
+.testi__author {
+  display: inline-flex;
+  align-items: center;
+  gap: .75rem;
+}
+.testi__avatar {
+  width: 46px; height: 46px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--orange);
+}
+.testi__name {
+  display: block;
+  font-size: .9rem;
+  font-weight: 700;
+  color: var(--c-text);
+}
+.testi__role {
+  display: block;
+  font-size: .74rem;
+  color: var(--c-muted);
+  margin-top: .1rem;
+}
+
+/* Dots — matches design */
+.testi__dots {
+  display: flex;
+  justify-content: center;
+  gap: .42rem;
+  margin-top: 1.75rem;
+}
+.testi__dot {
+  width: 9px; height: 9px;
+  border-radius: 50%;
+  background: #ddd;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  transition: all var(--transition);
+}
+.testi__dot.active {
+  background: var(--orange);
+  width: 26px;
+  border-radius: 4px;
+}
+.testi__dot:hover { background: var(--orange-dark); }
+
+@media (max-width: 600px) {
+  .testi { padding: 2.5rem 0; }
+  .testi__text { font-size: .88rem; }
+}

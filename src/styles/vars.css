@@ -1,0 +1,128 @@
+:root {
+  /* Brand colours — exact from design */
+  --orange: #f47b20;
+  --orange-dark: #d96a10;
+  --orange-light: #fff4eb;
+  --navy: #1c2333;
+  --navy-mid: #263045;
+  --blue-accent: #1a9cd8;
+
+  /* Neutral palette */
+  --c-text: #2c2c2c;
+  --c-muted: #7a7a7a;
+  --c-border: #e5e5e5;
+  --c-bg: #f6f7f8;
+  --c-white: #ffffff;
+
+  /* Shadows */
+  --sh-xs: 0 1px 4px rgba(0,0,0,.07);
+  --sh-sm: 0 2px 10px rgba(0,0,0,.09);
+  --sh-md: 0 4px 22px rgba(0,0,0,.13);
+  --sh-lg: 0 8px 40px rgba(0,0,0,.16);
+
+  /* Radii */
+  --r-xs: 3px;
+  --r-sm: 6px;
+  --r-md: 10px;
+  --r-lg: 16px;
+
+  /* Layout */
+  --max-w: 1260px;
+  --pad-x: 1.25rem;
+  --transition: .22s ease;
+
+  /* Header */
+  --hdr-top-h: 34px;
+  --hdr-main-h: 70px;
+  --hdr-nav-h: 42px;
+  --hdr-total: calc(var(--hdr-top-h) + var(--hdr-main-h) + var(--hdr-nav-h));
+}
+
+/* ---- Shared utilities ---- */
+.wrap {
+  width: 100%;
+  max-width: var(--max-w);
+  margin: 0 auto;
+  padding: 0 var(--pad-x);
+}
+
+.sec-title {
+  font-family: 'DM Serif Display', serif;
+  font-size: clamp(1.45rem, 2.8vw, 1.9rem);
+  color: var(--c-text);
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.btn-orange {
+  display: inline-flex;
+  align-items: center;
+  gap: .45rem;
+  background: var(--orange);
+  color: #fff;
+  font-weight: 700;
+  font-size: .875rem;
+  padding: .6rem 1.4rem;
+  border-radius: var(--r-xs);
+  transition: background var(--transition), box-shadow var(--transition), transform var(--transition);
+  min-height: 40px;
+  cursor: pointer;
+  border: none;
+  font-family: inherit;
+}
+.btn-orange:hover, .btn-orange:focus-visible {
+  background: var(--orange-dark);
+  box-shadow: 0 4px 14px rgba(244,123,32,.35);
+  transform: translateY(-1px);
+  outline: none;
+}
+.btn-outline-orange {
+  display: inline-flex;
+  align-items: center;
+  gap: .45rem;
+  background: transparent;
+  color: var(--orange);
+  border: 1.5px solid var(--orange);
+  font-weight: 700;
+  font-size: .875rem;
+  padding: .55rem 1.35rem;
+  border-radius: var(--r-xs);
+  transition: all var(--transition);
+  min-height: 40px;
+  cursor: pointer;
+  font-family: inherit;
+}
+.btn-outline-orange:hover, .btn-outline-orange:focus-visible {
+  background: var(--orange);
+  color: #fff;
+  outline: none;
+}
+
+/* Badges */
+.badge {
+  display: inline-block;
+  padding: .18rem .52rem;
+  border-radius: 3px;
+  font-size: .66rem;
+  font-weight: 700;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  line-height: 1.4;
+}
+.badge-sale       { background:#e74c3c; color:#fff; }
+.badge-new        { background:#27ae60; color:#fff; }
+.badge-bestseller { background:var(--orange); color:#fff; }
+.badge-deal       { background:var(--blue-accent); color:#fff; }
+.badge-hot        { background:#c0392b; color:#fff; }
+.badge-vibrate    { background:#8e44ad; color:#fff; }
+
+/* Spin */
+@keyframes spin { to { transform: rotate(360deg); } }
+.spin { animation: spin .7s linear infinite; }
+
+/* Fade-up entrance */
+@keyframes fadeUp { from{opacity:0;transform:translateY(18px)} to{opacity:1;transform:translateY(0)} }
+
+@media (max-width:768px) {
+  :root { --hdr-main-h: 58px; }
+}
