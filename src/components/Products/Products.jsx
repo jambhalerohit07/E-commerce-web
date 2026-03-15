@@ -8,8 +8,18 @@ import { useDebounce } from '../../hooks/useDebounce.js'
 import { useSearch } from '../../context/SearchContext.jsx'
 import './Products.css'
 
-const PER_PAGE = 8
-const CATS = ['All', 'Bags', 'Tech', 'Travel', 'Office', 'Drinkware', 'Health', 'Gifts']
+const PER_PAGE = 8;
+const CATS = [
+  "All",
+  "Apparel",
+  "Bags",
+  "Tech",
+  "Travel",
+  "Office",
+  "Drinkware",
+  "Health",
+  "Gifts",
+];
 
 function badgeClass(b) {
   if (!b) return null
@@ -113,28 +123,31 @@ function Pager({ page, total, per, set }) {
   )
 }
 
-export default function Products({ cat ,setCat}) {
-  /* Global search from header */
+export default function Products({
+  cat,
+  setCat,
+  setInputVal,
+  searchQuery = "",
+}) {
   const { globalQuery, clearSearch } = useSearch();
 
-  /* Local state */
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [localRaw, setLocalRaw] = useState("");
   const [page, setPage] = useState(1);
 
-  console.log("globalQueryglobalQuery", globalQuery);
-
   /* Debounce only the local search box */
   const localQ = useDebounce(localRaw, 400);
   const isTyping = localRaw !== localQ;
 
-  /* Whichever query is active: global takes priority */
-  const activeQuery = globalQuery || localQ;
+  /* Global query takes priority */
+  const activeQuery = (globalQuery || localQ || "").trim();
 
-  /* Sync local input when global query is pushed from header */
+  /* Sync local input when global query comes from header */
   useEffect(() => {
-    if (globalQuery) setLocalRaw(globalQuery);
+    if (globalQuery) {
+      setLocalRaw(globalQuery);
+    }
   }, [globalQuery]);
 
   /* Simulate async product load */
@@ -143,6 +156,7 @@ export default function Products({ cat ,setCat}) {
       setProducts(data);
       setLoading(false);
     }, 550);
+
     return () => clearTimeout(t);
   }, []);
 
@@ -151,28 +165,55 @@ export default function Products({ cat ,setCat}) {
     setPage(1);
   }, [cat, activeQuery]);
 
-  /* Filtered + searched products */
+  /* Filter + search products */
+  // const filtered = useMemo(() => {
+  //   let list = products;
+
+  //   if (cat !== "All") {
+  //     list = list.filter((p) => p.category === cat);
+  //   }
+
+  //   if (activeQuery) {
+  //     const lq = activeQuery.toLowerCase();
+
+  //     list = list.filter(
+  //       (p) =>
+  //         p.name.toLowerCase().includes(lq) ||
+  //         p.category.toLowerCase().includes(lq),
+  //     );
+  //   }
+
+  //   return list;
+  // }, [products, cat, activeQuery]);
+
   const filtered = useMemo(() => {
     let list = products;
-    if (cat !== "All") list = list.filter((p) => p.category === cat);
-    if (activeQuery.trim()) {
-      const lq = activeQuery.toLowerCase();
+
+    if (cat !== "All") {
+      list = list.filter((p) => p.category === cat);
+    }
+
+    if (searchQuery) {
+      const lq = searchQuery.toLowerCase();
+
       list = list.filter(
         (p) =>
           p.name.toLowerCase().includes(lq) ||
           p.category.toLowerCase().includes(lq),
       );
     }
+
     return list;
-  }, [products, cat, activeQuery]);
+  }, [products, cat, searchQuery]);
 
   const paged = useMemo(() => {
-    const s = (page - 1) * PER_PAGE;
-    return filtered.slice(s, s + PER_PAGE);
+    const start = (page - 1) * PER_PAGE;
+    return filtered.slice(start, start + PER_PAGE);
   }, [filtered, page]);
 
   const goPage = (n) => {
     setPage(n);
+
     document
       .getElementById("products")
       ?.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -180,16 +221,19 @@ export default function Products({ cat ,setCat}) {
 
   /* Clear all filters + queries */
   const handleClearAll = () => {
-    debugger;
     setLocalRaw("");
     setCat("All");
     clearSearch();
+    setInputVal("");
   };
 
   /* User edits local search box — also clears global */
   const handleLocalChange = (val) => {
     setLocalRaw(val);
-    if (globalQuery) clearSearch();
+
+    if (globalQuery) {
+      clearSearch();
+    }
   };
 
   return (
@@ -199,10 +243,10 @@ export default function Products({ cat ,setCat}) {
           Featured Products
         </h2>
 
-        {/* Global search indicator banner */}
-        {globalQuery && (
+        {/* Global search banner */}
+        {searchQuery !== "" && (
           <div className="prod-global-banner" role="status" aria-live="polite">
-            <Search size={15} aria-hidden="true" />
+            <Search size={15} />
             Showing results from global search:&nbsp;
             <strong>"{globalQuery}"</strong>
             <button
@@ -215,82 +259,46 @@ export default function Products({ cat ,setCat}) {
           </div>
         )}
 
-        {/* Controls */}
-        <div className="prod-ctrl">
-          {/* Local debounced search box */}
-          {/* <div className={`prod-search${isTyping ? ' typing' : ''}`} role="search">
-            <Search size={15} className="prod-search__ico" aria-hidden="true" />
-            <label htmlFor="prod-q" className="sr-only">Search products</label>
-            <input
-              id="prod-q"
-              type="search"
-              className="prod-search__inp"
-              placeholder="Search products…"
-              value={localRaw}
-              onChange={e => handleLocalChange(e.target.value)}
-              autoComplete="off"
-            />
-            {isTyping
-              ? <Loader2 size={14} className="prod-search__spin spin" aria-hidden="true" />
-              : localRaw && (
-                  <button className="prod-search__clear" onClick={handleClearAll} aria-label="Clear">
-                    <X size={14} />
-                  </button>
-                )
-            }
-          </div> */}
-
-          {/* Category filters */}
-          <div
-            className="prod-filters"
-            role="tablist"
-            aria-label="Filter by category"
-          >
-            {CATS.map((c) => (
-              <button
-                key={c}
-                className={`prod-filter${cat === c ? " active" : ""}`}
-                onClick={() => setCat(c)}
-                role="tab"
-                aria-selected={cat === c}
-              >
-                {c}
-              </button>
-            ))}
-          </div>
+        {/* Category filters */}
+        <div
+          className="prod-filters"
+          role="tablist"
+          aria-label="Filter by category"
+        >
+          {CATS.map((c) => (
+            <button
+              key={c}
+              className={`prod-filter${cat === c ? " active" : ""}`}
+              onClick={() => setCat(c)}
+              role="tab"
+              aria-selected={cat === c}
+            >
+              {c}
+            </button>
+          ))}
         </div>
 
         {/* Result count */}
         {!loading && (
-          <p className="prod-info" aria-live="polite" aria-atomic="true">
-            {activeQuery ? (
+          <p className="prod-info">
+            {searchQuery !== "" ? (
               <>
                 {filtered.length} result{filtered.length !== 1 ? "s" : ""} for "
-                <strong>{activeQuery}</strong>"
+                <strong>{searchQuery}</strong>"
               </>
             ) : (
               <>
                 {filtered.length} product{filtered.length !== 1 ? "s" : ""}
               </>
             )}
-            {filtered.length > PER_PAGE && (
-              <>
-                {" "}
-                &mdash; page {page} of {Math.ceil(filtered.length / PER_PAGE)}
-              </>
-            )}
           </p>
         )}
 
-        {/* Grid / skeleton / empty */}
+        {/* Products */}
         {loading ? (
-          <div
-            className="prod-skel"
-            aria-busy="true"
-            aria-label="Loading products"
-          >
+          <div className="prod-skel">
             {Array.from({ length: 8 }).map((_, i) => (
-              <div key={i} className="skel" aria-hidden="true">
+              <div key={i} className="skel">
                 <div className="skel__img" />
                 <div className="skel__line" />
                 <div className="skel__line skel__line--s" />
@@ -298,19 +306,20 @@ export default function Products({ cat ,setCat}) {
             ))}
           </div>
         ) : paged.length === 0 ? (
-          <div className="prod-empty" role="status">
-            <Search size={40} aria-hidden="true" />
+          <div className="prod-empty">
+            <Search size={40} />
             <p>
-              No products found{activeQuery ? ` for "${activeQuery}"` : ""}.
+              No products found{searchQuery ? ` for "${searchQuery}"` : ""}.
             </p>
+
             <button className="btn-outline-orange" onClick={handleClearAll}>
               Clear filters
             </button>
           </div>
         ) : (
-          <div className="prod-grid" role="list">
+          <div className="prod-grid">
             {paged.map((p) => (
-              <div key={p.id} role="listitem">
+              <div key={p.id}>
                 <Card p={p} />
               </div>
             ))}
@@ -325,15 +334,6 @@ export default function Products({ cat ,setCat}) {
             per={PER_PAGE}
             set={goPage}
           />
-        )}
-
-        {/* View All CTA */}
-        {!loading && !activeQuery && cat === "All" && (
-          <div className="prod-viewall">
-            <a href="#" className="btn-orange">
-              View All
-            </a>
-          </div>
         )}
       </div>
     </section>

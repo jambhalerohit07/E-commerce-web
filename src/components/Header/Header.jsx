@@ -10,7 +10,7 @@ import './Header.css'
 
 const NAV = [
   { label: "2025 New Products", link: "All" },
-  { label: "Apparel", sub: true, link: "All" },
+  { label: "Apparel", sub: true, link: "Apparel" },
   { label: "Bags", sub: true, link: "Bags" },
   { label: "Drinkware", sub: true, link: "Drinkware" },
   { label: "Health & Wellness", link: "Health" },
@@ -101,13 +101,17 @@ function Dropdown({ query, results, onSelect, onViewAll }) {
   )
 }
 
-export default function Header({onCategoryChange}) {
+export default function Header({
+  onCategoryChange,
+  inputVal,
+  setInputVal,
+  onSearch,
+}) {
   const { commitSearch } = useSearch();
 
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [mSearchOpen, setMSearchOpen] = useState(false);
   const [pinned, setPinned] = useState(false);
-  const [inputVal, setInputVal] = useState("");
   const [dropOpen, setDropOpen] = useState(false);
 
   const debouncedQ = useDebounce(inputVal, 300);
@@ -123,7 +127,9 @@ export default function Header({onCategoryChange}) {
     window.addEventListener("scroll", fn, { passive: true });
     return () => window.removeEventListener("scroll", fn);
   }, []);
-
+  useEffect(() => {
+    onSearch?.(debouncedQ);
+  }, [debouncedQ]);
   /* Body scroll lock when drawer open */
   useEffect(() => {
     document.body.style.overflow = drawerOpen ? "hidden" : "";
@@ -260,7 +266,7 @@ export default function Header({onCategoryChange}) {
                 aria-haspopup="listbox"
                 aria-controls="hdr-results"
               />
-              {inputVal && (
+              {/* {inputVal && (
                 <button
                   type="button"
                   className="hdr-search__x"
@@ -269,7 +275,7 @@ export default function Header({onCategoryChange}) {
                 >
                   <X size={13} />
                 </button>
-              )}
+              )} */}
               <button
                 className="hdr-search__btn"
                 type="submit"
@@ -447,7 +453,10 @@ export default function Header({onCategoryChange}) {
               <a
                 href="#"
                 className="hdr-drawer__link"
-                onClick={() => {onCategoryChange?.(n.link); setDrawerOpen(false)}}
+                onClick={() => {
+                  onCategoryChange?.(n.link);
+                  setDrawerOpen(false);
+                }}
               >
                 {n.label}
                 {n.sub && <ChevronDown size={14} aria-hidden="true" />}

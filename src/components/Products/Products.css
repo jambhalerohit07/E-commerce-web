@@ -45,7 +45,7 @@
 
 /* Info */
 .prod-info {
-  font-size:.8rem; color:var(--c-muted); margin-bottom:1.25rem; font-weight:500;
+  font-size:.8rem; color:var(--c-muted); margin-bottom:1.25rem; font-weight:500;margin-top: 5px;
 }
 .prod-info strong { color:var(--c-text); }
 

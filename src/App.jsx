@@ -11,18 +11,40 @@ import Newsletter   from './components/Newsletter/Newsletter.jsx'
 import Footer       from './components/Footer/Footer.jsx'
 
 export default function App() {
-    const [cat, setCat] = useState("All");
-  
-  const onCategoryChange = (cat) => {
+  const [cat, setCat] = useState("All");
+  const [inputVal, setInputVal] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
 
-setCat(cat)  }
+  const onCategoryChange = (cat) => {
+    setCat(cat);
+  };
+  const handleSearch = (query) => {
+    setSearchQuery(query);
+    // Auto-scroll to products section when user searches
+    if (query.trim()) {
+      document
+        .getElementById("products")
+        ?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  };
   return (
     <SearchProvider>
-      <Header onCategoryChange={onCategoryChange} />
+      <Header
+        onCategoryChange={onCategoryChange}
+        inputVal={inputVal}
+        setInputVal={setInputVal}
+        onSearch={handleSearch}
+      />
       <main>
         <Hero />
         <Categories />
-        <Products cat={cat} setCat={setCat} />
+        <Products
+          cat={cat}
+          setCat={setCat}
+          inputVal={inputVal}
+          setInputVal={setInputVal}
+          searchQuery={searchQuery}
+        />
         {/* <MediaBanner /> */}
         {/* <Offers /> */}
         {/* <Testimonials /> */}

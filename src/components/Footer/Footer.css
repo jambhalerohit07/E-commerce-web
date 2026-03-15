@@ -1,4 +1,4 @@
-.footer { background: var(--c-bg); }
+.footer { background: var(--c-bg);margin-top: 10px; }
 
 /* ── Partner logos ── */
 .footer__partners {

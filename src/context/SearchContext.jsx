@@ -17,7 +17,7 @@ export function SearchProvider({ children }) {
   }, [])
 
   const clearSearch = useCallback(() => {
-    console.log('Clearing search')
+    ("Clearing search");
     setGlobalQuery('')
   }, [])
 
