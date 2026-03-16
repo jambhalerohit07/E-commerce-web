@@ -1,6 +1,6 @@
-import React from 'react'
-import { Play } from 'lucide-react'
-import './MediaBanner.css'
+import React from "react";
+import { Play } from "lucide-react";
+import "./MediaBanner.css";
 
 export default function MediaBanner() {
   return (
@@ -13,13 +13,13 @@ export default function MediaBanner() {
           loading="lazy"
         />
         <div className="mbanner__overlay" aria-hidden="true" />
-        {/* Center play button — exact from design */}
         <button className="mbanner__play" aria-label="Play product video">
           <Play size={22} fill="currentColor" aria-hidden="true" />
         </button>
-        {/* Brand watermark bottom right — matches design */}
-        <span className="mbanner__brand" aria-hidden="true">Marshall</span>
+        <span className="mbanner__brand" aria-hidden="true">
+          Marshall
+        </span>
       </div>
     </section>
-  )
+  );
 }

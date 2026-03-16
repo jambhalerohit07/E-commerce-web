@@ -1,12 +1,21 @@
-import React, { useState, useEffect, useRef, useMemo } from 'react'
+import React, { useState, useEffect, useRef, useMemo } from "react";
 import {
-  ShoppingCart, Heart, User, Search, Menu, X,
-  ChevronDown, Package, Loader2, ArrowRight, Tag
-} from 'lucide-react'
-import { useDebounce } from '../../hooks/useDebounce.js'
-import { useSearch } from '../../context/SearchContext.jsx'
-import allProducts from '../../data/products.json'
-import './Header.css'
+  ShoppingCart,
+  Heart,
+  User,
+  Search,
+  Menu,
+  X,
+  ChevronDown,
+  Package,
+  Loader2,
+  ArrowRight,
+  Tag,
+} from "lucide-react";
+import { useDebounce } from "../../hooks/useDebounce.js";
+import { useSearch } from "../../context/SearchContext.jsx";
+import allProducts from "../../data/products.json";
+import "./Header.css";
 
 const NAV = [
   { label: "2025 New Products", link: "All" },
@@ -33,39 +42,41 @@ const NAV_LINKS = [
   "Travel",
 ];
 
-const MAX_RESULTS = 6
+const MAX_RESULTS = 6;
 
-/* Highlight matching substring */
 function Highlight({ text, query }) {
-  if (!query.trim()) return <>{text}</>
-  const i = text.toLowerCase().indexOf(query.toLowerCase())
-  if (i === -1) return <>{text}</>
+  if (!query.trim()) return <>{text}</>;
+  const i = text.toLowerCase().indexOf(query.toLowerCase());
+  if (i === -1) return <>{text}</>;
   return (
     <>
       {text.slice(0, i)}
       <mark className="srch-hl">{text.slice(i, i + query.length)}</mark>
       {text.slice(i + query.length)}
     </>
-  )
+  );
 }
 
-/* Floating dropdown panel */
 function Dropdown({ query, results, onSelect, onViewAll }) {
   return (
     <div className="srch-drop" role="listbox" aria-label="Search suggestions">
       {results.length === 0 ? (
         <div className="srch-drop__empty">
           <Search size={20} aria-hidden="true" />
-          <p>No results for <strong>"{query}"</strong></p>
+          <p>
+            No results for <strong>"{query}"</strong>
+          </p>
           <span>Try a different spelling or browse categories</span>
         </div>
       ) : (
         <>
           <p className="srch-drop__hd" aria-live="polite">
-            {results.length >= MAX_RESULTS ? 'Top matches' : `${results.length} result${results.length !== 1 ? 's' : ''}`}
+            {results.length >= MAX_RESULTS
+              ? "Top matches"
+              : `${results.length} result${results.length !== 1 ? "s" : ""}`}
           </p>
           <ul>
-            {results.map(p => (
+            {results.map((p) => (
               <li key={p.id}>
                 <button
                   className="srch-drop__row"
@@ -73,7 +84,12 @@ function Dropdown({ query, results, onSelect, onViewAll }) {
                   onClick={() => onSelect(p)}
                   aria-label={`${p.name}, ${p.category}, $${p.price.toFixed(2)}`}
                 >
-                  <img src={p.img} alt="" className="srch-drop__img" aria-hidden="true" />
+                  <img
+                    src={p.img}
+                    alt=""
+                    className="srch-drop__img"
+                    aria-hidden="true"
+                  />
                   <div className="srch-drop__text">
                     <span className="srch-drop__name">
                       <Highlight text={p.name} query={query} />
@@ -84,8 +100,12 @@ function Dropdown({ query, results, onSelect, onViewAll }) {
                     </span>
                   </div>
                   <div className="srch-drop__aside">
-                    <span className="srch-drop__price">${p.price.toFixed(2)}</span>
-                    {p.badge && <span className="srch-drop__badge">{p.badge}</span>}
+                    <span className="srch-drop__price">
+                      ${p.price.toFixed(2)}
+                    </span>
+                    {p.badge && (
+                      <span className="srch-drop__badge">{p.badge}</span>
+                    )}
                   </div>
                 </button>
               </li>
@@ -98,7 +118,7 @@ function Dropdown({ query, results, onSelect, onViewAll }) {
         </>
       )}
     </div>
-  )
+  );
 }
 
 export default function Header({
@@ -121,7 +141,6 @@ export default function Header({
   const desktopInp = useRef(null);
   const mobileInp = useRef(null);
 
-  /* Shadow on scroll */
   useEffect(() => {
     const fn = () => setPinned(window.scrollY > 4);
     window.addEventListener("scroll", fn, { passive: true });
@@ -130,7 +149,6 @@ export default function Header({
   useEffect(() => {
     onSearch?.(debouncedQ);
   }, [debouncedQ]);
-  /* Body scroll lock when drawer open */
   useEffect(() => {
     document.body.style.overflow = drawerOpen ? "hidden" : "";
     return () => {
@@ -138,12 +156,10 @@ export default function Header({
     };
   }, [drawerOpen]);
 
-  /* Auto-focus mobile input */
   useEffect(() => {
     if (mSearchOpen && mobileInp.current) mobileInp.current.focus();
   }, [mSearchOpen]);
 
-  /* Close dropdown on click outside */
   useEffect(() => {
     const fn = (e) => {
       if (wrapRef.current && !wrapRef.current.contains(e.target)) {
@@ -154,12 +170,10 @@ export default function Header({
     return () => document.removeEventListener("mousedown", fn);
   }, []);
 
-  /* Open/close dropdown based on debounced query */
   useEffect(() => {
     setDropOpen(debouncedQ.trim().length > 0);
   }, [debouncedQ]);
 
-  /* Escape closes dropdown */
   useEffect(() => {
     const fn = (e) => {
       if (e.key === "Escape") setDropOpen(false);
@@ -168,7 +182,6 @@ export default function Header({
     return () => window.removeEventListener("keydown", fn);
   }, []);
 
-  /* Live filtered results */
   const results = useMemo(() => {
     if (!debouncedQ.trim()) return [];
     const lq = debouncedQ.toLowerCase();
@@ -181,14 +194,12 @@ export default function Header({
       .slice(0, MAX_RESULTS);
   }, [debouncedQ]);
 
-  /* User clicks a product in dropdown → fill input + scroll + filter products */
   const handleSelect = (product) => {
     setInputVal(product.name);
     setDropOpen(false);
     commitSearch(product.name);
   };
 
-  /* Submit form or "See all results" */
   const handleCommit = (q = inputVal) => {
     if (!q.trim()) return;
     setDropOpen(false);
@@ -241,7 +252,6 @@ export default function Header({
             </span>
           </a>
 
-          {/* ── Desktop search + dropdown ── */}
           <div className="hdr-search-wrap" ref={wrapRef}>
             <form
               className={`hdr-search${dropOpen ? " hdr-search--active" : ""}`}
@@ -266,16 +276,6 @@ export default function Header({
                 aria-haspopup="listbox"
                 aria-controls="hdr-results"
               />
-              {/* {inputVal && (
-                <button
-                  type="button"
-                  className="hdr-search__x"
-                  onClick={handleClear}
-                  aria-label="Clear search"
-                >
-                  <X size={13} />
-                </button>
-              )} */}
               <button
                 className="hdr-search__btn"
                 type="submit"
@@ -340,7 +340,6 @@ export default function Header({
           </div>
         </div>
 
-        {/* ── Mobile search panel ── */}
         {mSearchOpen && (
           <div className="hdr-msearch">
             <div className="wrap">
@@ -383,7 +382,6 @@ export default function Header({
                 </div>
               </form>
 
-              {/* Mobile dropdown results */}
               {debouncedQ.trim() && (
                 <Dropdown
                   query={debouncedQ}
@@ -403,7 +401,6 @@ export default function Header({
         )}
       </div>
 
-      {/* ── NAV BAR ── */}
       <nav className="hdr-nav" aria-label="Main navigation">
         <div className="wrap">
           <ul className="hdr-nav__list" role="list">

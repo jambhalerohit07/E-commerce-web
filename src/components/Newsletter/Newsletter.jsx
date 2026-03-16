@@ -1,15 +1,15 @@
-import React, { useState } from 'react'
-import { AlertCircle, CheckCircle, Send } from 'lucide-react'
-import './Newsletter.css'
+import React, { useState } from "react";
+import { AlertCircle, CheckCircle, Send } from "lucide-react";
+import "./Newsletter.css";
 
 const validateEmail = (email) => {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 };
 export default function Newsletter() {
-  const [email,     setEmail]     = useState('')
-  const [error,     setError]     = useState('')
-  const [done,      setDone]      = useState(false)
-  const [loading,   setLoading]   = useState(false)
+  const [email, setEmail] = useState("");
+  const [error, setError] = useState("");
+  const [done, setDone] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const submit = (e) => {
     e.preventDefault();
@@ -46,7 +46,6 @@ export default function Newsletter() {
   return (
     <section className="nl" aria-labelledby="nl-title">
       <div className="wrap nl__grid">
-        {/* ── Col 1: Newsletter form ── */}
         <div className="nl__form-col">
           <h2 className="nl__heading" id="nl-title">
             Weekly Newsletter
@@ -113,7 +112,6 @@ export default function Newsletter() {
           )}
         </div>
 
-        {/* ── Col 2: Travel Accessories banner ── */}
         <a
           href="#"
           className="nl__banner nl__banner--travel"
@@ -134,7 +132,6 @@ export default function Newsletter() {
           </div>
         </a>
 
-        {/* ── Col 3: Gift Sets banner ── */}
         <a
           href="#"
           className="nl__banner nl__banner--gifts"
@@ -152,24 +149,6 @@ export default function Newsletter() {
           </div>
         </a>
       </div>
-
-      {/* ── Product image strip ── matches the 6-thumbnail row at bottom of design ── */}
-      {/* <div className="nl__strip">
-        <div className="wrap nl__strip-inner">
-          {[
-            'https://images.unsplash.com/photo-1583485088034-697b5bc54ccd?w=200&h=160&fit=crop',
-            'https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=200&h=160&fit=crop',
-            'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=200&h=160&fit=crop',
-            'https://images.unsplash.com/photo-1514228742587-6b1558fcca3d?w=200&h=160&fit=crop',
-            'https://images.unsplash.com/photo-1517842645767-c639042777db?w=200&h=160&fit=crop',
-            'https://images.unsplash.com/photo-1598289431512-b97b0917affc?w=200&h=160&fit=crop',
-          ].map((src, i) => (
-            <a key={i} href="#" className="nl__strip-item" aria-label={`Product ${i + 1}`}>
-              <img src={src} alt={`Product ${i + 1}`} loading="lazy" />
-            </a>
-          ))}
-        </div> */}
-      {/* </div> */}
     </section>
   );
 }

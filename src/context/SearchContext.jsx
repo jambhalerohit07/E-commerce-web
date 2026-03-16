@@ -1,35 +1,32 @@
-import React, { createContext, useContext, useState, useCallback } from 'react'
+import React, { createContext, useContext, useState, useCallback } from "react";
 
-const SearchCtx = createContext(null)
+const SearchCtx = createContext(null);
 
 export function SearchProvider({ children }) {
-  const [globalQuery, setGlobalQuery] = useState('')
+  const [globalQuery, setGlobalQuery] = useState("");
 
-  // Called from Header when user submits search or clicks a result
-  // Scrolls to #products and sets the query
   const commitSearch = useCallback((q) => {
-    setGlobalQuery(q)
-    // Give React one tick to propagate state, then scroll
+    setGlobalQuery(q);
     setTimeout(() => {
-      const el = document.getElementById('products')
-      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' })
-    }, 50)
-  }, [])
+      const el = document.getElementById("products");
+      if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+    }, 50);
+  }, []);
 
   const clearSearch = useCallback(() => {
     ("Clearing search");
-    setGlobalQuery('')
-  }, [])
+    setGlobalQuery("");
+  }, []);
 
   return (
     <SearchCtx.Provider value={{ globalQuery, commitSearch, clearSearch }}>
       {children}
     </SearchCtx.Provider>
-  )
+  );
 }
 
 export function useSearch() {
-  const ctx = useContext(SearchCtx)
-  if (!ctx) throw new Error('useSearch must be used inside <SearchProvider>')
-  return ctx
+  const ctx = useContext(SearchCtx);
+  if (!ctx) throw new Error("useSearch must be used inside <SearchProvider>");
+  return ctx;
 }
